@@ -1,2 +1,0 @@
-# XoXo-Front
-XoXo, chat
