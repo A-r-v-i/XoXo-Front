@@ -27,9 +27,10 @@ class SinglePost extends Component {
         return res.json();
       })
       .then(resData => {
+        console.log(resData);
         this.setState({
           title: resData.post.title,
-          author: resData.post.creator.name,
+          author: resData.post.creator,
           image: rootUrl+resData.post.imageUrl,
           date: new Date(resData.post.createdAt).toLocaleDateString('en-US'),
           content: resData.post.content
