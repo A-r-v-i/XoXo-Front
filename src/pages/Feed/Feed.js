@@ -41,19 +41,20 @@ class Feed extends Component {
       .catch(this.catchError);
 
     this.loadPosts();
-    {// const socket = openSocket(rootUrl);
+
+    // const socket = openSocket(rootUrl);
     // socket.on("posts", (data) => {
     //   if (data.action === "create") {
     //     this.addPost(data.post);
-    //   } else if(data.action === 'update') {
+    //   } else if (data.action === "update") {
     //     this.updatePost(data.post);
-    //   } else if(data.action === 'delete') {
+    //   } else if (data.action === "delete") {
     //     this.loadPosts();
     //   }
-    // });}
+    // });
   }
 
-{  // addPost = (post) => {
+  // addPost = (post) => {
   //   this.setState((prevState) => {
   //     const updatedPosts = [...prevState.posts];
   //     if (prevState.postPage === 1) {
@@ -82,7 +83,7 @@ class Feed extends Component {
   //     };
   //   });
   // };
-}
+
   loadPosts = (direction) => {
     if (direction) {
       this.setState({ postsLoading: true, posts: [] });
@@ -118,7 +119,7 @@ class Feed extends Component {
           totalPosts: resData.totalItems,
           postsLoading: false,
         });
-        
+
         console.log(this.state.posts);
       })
       .catch(this.catchError);

@@ -60,16 +60,17 @@ class App extends Component {
   loginHandler = (event, authData) => {
     event.preventDefault();
     this.setState({ authLoading: true });
-    fetch('http://localhost:8080/auth/login', {
-      method: 'POST',
+    fetch("http://localhost:8080/auth/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email:authData.email,
-        password: authData.password
-      })
-    }).then((res) => {
+        email: authData.email,
+        password: authData.password,
+      }),
+    })
+      .then((res) => {
         if (res.status === 422) {
           throw new Error("Validation failed.");
         }
@@ -80,7 +81,7 @@ class App extends Component {
         return res.json();
       })
       .then((resData) => {
-        console.log("user loggedin")
+        console.log("user loggedin");
         this.setState({
           isAuth: true,
           token: resData.token,
@@ -109,31 +110,46 @@ class App extends Component {
   signupHandler = (event, authData) => {
     event.preventDefault();
     this.setState({ authLoading: true });
-    fetch(rootUrl+'auth/signUp', {
-      method: 'PUT',
+    //this fetch works with RestAPI
+    //fetch(rootUrl+'auth/signUp', {
+
+    const graphqlQuery = {
+      query: `
+      mutation {
+        createUser(userSignUpInput: {
+          email: "${authData.signupForm.email.value}", 
+          name: "${authData.signupForm.name.value}", 
+          password: "${authData.signupForm.password.value}"
+        })
+          {
+            _id
+            name
+          }
+      }
+      `,
+    };
+
+    fetch(rootUrl + "graphql", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        email: authData.signupForm.email.value,
-        password: authData.signupForm.password.value,
-        name: authData.signupForm.name.value
-      })
+      body: JSON.stringify(graphqlQuery),
     })
       .then((res) => {
-        if (res.status === 422) {
-          throw new Error(
-            "Validation failed. Make sure the email address isn't used yet!"
-          );
-        }
-        if (res.status !== 200 && res.status !== 201) {
-          console.log("Error!");
-          throw new Error("Creating a user failed!");
-        }
         return res.json();
       })
       .then((resData) => {
         console.log(resData);
+        if (resData.errors && resData.errors[0].status === 422) {
+          throw new Error(
+            "Validation failed. Make sure the email address isn't used yet!"
+          );
+        }
+        if (resData.errors) {
+          console.log(resData.errors);
+          throw new Error("Creating a user failed!");
+        }
         this.setState({ isAuth: false, authLoading: false });
         this.props.history.replace("/");
       })
