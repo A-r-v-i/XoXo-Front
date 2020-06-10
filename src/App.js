@@ -84,18 +84,18 @@ class App extends Component {
         console.log("user loggedin");
         this.setState({
           isAuth: true,
-          token: resData.token,
+        //  token: resData.token,
           authLoading: false,
           userId: resData.userId,
         });
-        localStorage.setItem("token", resData.token);
-        localStorage.setItem("userId", resData.userId);
-        const remainingMilliseconds = 60 * 60 * 1000;
-        const expiryDate = new Date(
-          new Date().getTime() + remainingMilliseconds
-        );
-        localStorage.setItem("expiryDate", expiryDate.toISOString());
-        this.setAutoLogout(remainingMilliseconds);
+        // localStorage.setItem("token", resData.token);
+        // localStorage.setItem("userId", resData.userId);
+        // const remainingMilliseconds = 60 * 60 * 1000;
+        // const expiryDate = new Date(
+        //   new Date().getTime() + remainingMilliseconds
+        // );
+        // localStorage.setItem("expiryDate", expiryDate.toISOString());
+        // this.setAutoLogout(remainingMilliseconds);
       })
       .catch((err) => {
         console.log(err);
@@ -108,33 +108,38 @@ class App extends Component {
   };
 
   signupHandler = (event, authData) => {
+    const data = authData.signupForm;
     event.preventDefault();
     this.setState({ authLoading: true });
     //this fetch works with RestAPI
-    //fetch(rootUrl+'auth/signUp', {
+    fetch(rootUrl+'auth/signUp', {
 
-    const graphqlQuery = {
-      query: `
-      mutation {
-        createUser(userSignUpInput: {
-          email: "${authData.signupForm.email.value}", 
-          name: "${authData.signupForm.name.value}", 
-          password: "${authData.signupForm.password.value}"
-        })
-          {
-            _id
-            name
-          }
-      }
-      `,
-    };
+    // const graphqlQuery = {
+    //   query: `
+    //   mutation {
+    //     createUser(userSignUpInput: {
+    //       email: "${authData.signupForm.email.value}", 
+    //       name: "${authData.signupForm.name.value}", 
+    //       password: "${authData.signupForm.password.value}"
+    //     })
+    //       {
+    //         _id
+    //         name
+    //       }
+    //   }
+    //   `,
+    // };
 
-    fetch(rootUrl + "graphql", {
+    //fetch(rootUrl + "graphql", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(graphqlQuery),
+      body: JSON.stringify({
+        email: data.email.value,
+        password: data.password.value,
+        name: data.name.value
+      }),
     })
       .then((res) => {
         return res.json();
